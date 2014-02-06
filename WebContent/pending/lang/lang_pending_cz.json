@@ -1,18 +1,18 @@
 {
-    "header": "Your reservation",
+    "header": "Vaše rezervace",
     "intro": {
-        "p1": "All timeslots you are allocated will be part of your pending reservations until they have expired. Remember that time is exclusively for you, nobody else can use it. The maximum number of reservations that you can accumulate is 2, but they could be simultaneous!",
-        "p2": "This panel allows you to manage your reservations, so you can review and cancel them, and as soon as they are active, access the experiment and control the telescope. To do this, simply click the reservation of interest and see your options. It is important to note that when the time comes to start your experiment, the weather may prohibit the telescope from observing."
+        "p1": "Všechny timesloty které jste alokoval(a) budou zařazeny mezi vaše nevyřízené rezervace dokud nevyprší. Tento pozorovací čas je pouze váš, nikdo další ho nemůže použít. Maximální počet současných rezervací je 2.",
+        "p2": "Tento panel vám umožné spravovat vaše rezervace, můžete je prohlížet nebo rušit, a když jsou aktivní, vstupit do experimentu a ovládat dalekohled. K tomu stačí kliknout na rezervaci. Poznámka: nepříznivé počasí může pozorování znemožnit."
     },
-    "loading": "Loading",
-    "nores": "You do not have any pending reservation now. Go and get one for you.",
-    "here": "here",
-    "go": "Go",
-    "cancel": "Cancel",
+    "loading": "Nahrávám",
+    "nores": "Nemáte žádné nevyřízené rezervace. Rezervujte si čas.",
+    "here": "zde",
+    "go": "Jdi",
+    "cancel": "Zrušit",
     "table": {
         "experiment": "Experiment",
-        "begin": "Begin",
-        "end": "End",
-        "telescopes": "Telescopes"
+        "begin": "Začátek",
+        "end": "Konec",
+        "telescopes": "Dalekohledy"
     }
 }
