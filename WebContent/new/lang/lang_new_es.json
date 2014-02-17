@@ -25,27 +25,7 @@
 				"bart": {
 					"name": "BART",
 					"desc": "Ondrejov, República Checa (AUAV)"
-				},
-                "b1a": {
-                    "name": "BOOTES-1A",
-                    "desc": "Andalucía, Spain (CSIC)"
-                },
-                "b1b": {
-                    "name": "BOOTES-1B",
-                    "desc": "Andalucía, Spain (CSIC)"
-                },
-                "b2": {
-                    "name": "BOOTES-2",
-                    "desc": "Andalucía, Spain (CSIC)"
-                },
-                "b3": {
-                    "name": "BOOTES-3",
-                    "desc": "Nueva Zelanda (CSIC)"
-                },
-                "d50": {
-                    "name": "D50",
-                    "desc": "Ondrejov, República Checa (AUAV)"
-                }
+				}
 			}
 		},
 		"three": {
