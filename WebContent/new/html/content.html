@@ -53,6 +53,51 @@
 						{{'new.phases.two.telescopes.bart.desc'|i18n}}
 					</div>
 				</li>
+				<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<div class="experiment-banner pcard"
+						style="background-image: url(new/img/b1-alpha.png);"
+						ng-click="telescopeClicked('BOOTES-1A')"
+						ng-class="{highCard: telescopeSelected == 'BOOTES-1A'}">
+						<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.b1a.name'|i18n}}</h4>
+						{{'new.phases.two.telescopes.b1a.desc'|i18n}}
+					</div>
+				</li>
+				<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<div class="experiment-banner pcard"
+						style="background-image: url(new/img/b1-alpha.png);"
+						ng-click="telescopeClicked('BOOTES-1B')"
+						ng-class="{highCard: telescopeSelected == 'BOOTES-1B'}">
+						<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.b1b.name'|i18n}}</h4>
+						{{'new.phases.two.telescopes.b1b.desc'|i18n}}
+					</div>
+				</li>
+				<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<div class="experiment-banner pcard"
+						style="background-image: url(new/img/b2-alpha.png);"
+						ng-click="telescopeClicked('BOOTES-2')"
+						ng-class="{highCard: telescopeSelected == 'BOOTES-2'}">
+						<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.b2.name'|i18n}}</h4>
+						{{'new.phases.two.telescopes.b2.desc'|i18n}}
+					</div>
+				</li>
+				<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<div class="experiment-banner pcard"
+						style="background-image: url(new/img/b3-alpha.png);"
+						ng-click="telescopeClicked('BOOTES-3')"
+						ng-class="{highCard: telescopeSelected == 'BOOTES-3'}">
+						<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.b3.name'|i18n}}</h4>
+						{{'new.phases.two.telescopes.b3.desc'|i18n}}
+					</div>
+				</li>
+				<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<div class="experiment-banner pcard"
+						style="background-image: url(new/img/d50-alpha.png);"
+						ng-click="telescopeClicked('D50')"
+						ng-class="{highCard: telescopeSelected == 'D50'}">
+						<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.d50.name'|i18n}}</h4>
+						{{'new.phases.two.telescopes.d50.desc'|i18n}}
+					</div>
+				</li>
 			</ul>
 		</div>
 
@@ -86,8 +131,7 @@
 				<div class="animate-show"
 					ng-show="!loading && dateSelected && available.length == 0"
 					style="width: 100%; margin-right: 0px; margin-top: 20px">
-					<div class="alert alert-g">{{'new.phases.four.noslot'|i18n}}
-						day.</div>
+					<div class="alert alert-g">{{'new.phases.four.noslot'|i18n}}.</div>
 				</div>
 				<div ng-show="!loading && available.length > 0 && dateSelected">
 					<div id="table" class="table table-hover"
