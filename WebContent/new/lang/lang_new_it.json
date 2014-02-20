@@ -45,6 +45,10 @@
                 "d50": {
                     "name": "D50",
                     "desc": "Ondrejov, Repubblica Ceca (AUAV)"
+                },
+                "tadn": {
+                    "name": "TADn",
+                    "desc": "Tenerife, Spain (IAC)"
                 }
 			}
 		},

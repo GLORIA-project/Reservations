@@ -13,7 +13,8 @@ function loadPendingReservations(scope, api) {
 				reservationId : element.reservationId,
 				begin : element.timeSlot.begin,
 				end : element.timeSlot.end,
-				telescopes : element.telescopes
+				telescopes : element.telescopes,
+				user : element.user
 			});
 		});
 
@@ -39,34 +40,51 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 					function(Y) {
 
 						scope.table = new Y.DataTable({
-							columns : [ {
-								key : 'reservationId',
-								sortable : true,
-								label : '#'
-							}, {
-								key : 'experiment',
-								label : filter('i18n')('pending.table.experiment')
-							}, {
-								key : 'begin',
-								label : filter('i18n')('pending.table.begin'),
-								sortable : 'true',
-								formatter : function(o) {
-									return new Date(o.value).toUTCString();
-								}
+							columns : [
+									{
+										key : 'reservationId',
+										sortable : true,
+										label : '#'
+									},
+									{
+										key : 'user',
+										sortable : true,
+										label : filter('i18n')(
+										'pending.table.user')
+									},
+									{
+										key : 'experiment',
+										label : filter('i18n')(
+												'pending.table.experiment')
+									},
+									{
+										key : 'begin',
+										label : filter('i18n')(
+												'pending.table.begin'),
+										sortable : 'true',
+										formatter : function(o) {
+											return new Date(o.value)
+													.toUTCString();
+										}
 
-							}, {
-								key : 'end',
-								label : filter('i18n')('pending.table.end'),
-								sortable : 'true',
-								formatter : function(o) {
-									o.rowClass = 'rowBack';
-									o.value = new Date(o.value).toUTCString();
-								}
+									},
+									{
+										key : 'end',
+										label : filter('i18n')(
+												'pending.table.end'),
+										sortable : 'true',
+										formatter : function(o) {
+											o.rowClass = 'rowBack';
+											o.value = new Date(o.value)
+													.toUTCString();
+										}
 
-							}, {
-								key : 'telescopes',
-								label : filter('i18n')('pending.table.telescopes')
-							} ],
+									},
+									{
+										key : 'telescopes',
+										label : filter('i18n')(
+												'pending.table.telescopes')
+									} ],
 							recordset : scope.pending.slice(0, 10)
 						});
 
@@ -125,11 +143,11 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$window, $gloriaLocale, $filter) {
 
 	$scope.pendingReady = false;
-	
+
 	$gloriaLocale.loadResource('pending/lang', 'pending', function() {
 		$scope.pendingReady = true;
 	});
-	
+
 	$scope.pending = [];
 	$scope.loading = true;
 	$scope.pendingRetrieved = false;
@@ -211,7 +229,8 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	$scope.go = function() {
 
 		var url = $window.location.origin + '/'
-				+ $scope.selected.experiment.toLowerCase() + '/#/view?rid=' + $scope.selected.reservationId;
+				+ $scope.selected.experiment.toLowerCase() + '/#/view?rid='
+				+ $scope.selected.reservationId;
 		$window.location.href = url;
 	};
 

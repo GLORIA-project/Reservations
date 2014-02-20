@@ -13,6 +13,7 @@
         "experiment": "Эксперимент",
         "begin": "Начало",
         "end": "Окончание",
-        "telescopes": "Телескопы"
+        "telescopes": "Телескопы",
+        "user": "User"
     }
 }
