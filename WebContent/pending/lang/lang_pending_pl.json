@@ -9,6 +9,8 @@
     "here": "tutaj",
     "go": "Rezerwuj",
     "cancel": "Anuluj",
+    "refresh": "Loading",
+    "error": "Telescope problem",
     "table": {
         "experiment": "Eksperyment",
         "begin": "Rozpocznij",

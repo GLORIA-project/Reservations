@@ -10,6 +10,8 @@
     "here": "ici",
     "go": "Allez",
     "cancel": "Annuler",
+    "refresh": "Loading",
+    "error": "Telescope problem",
     "table": {
         "experiment": "Expérience",
         "begin": "Début",

@@ -22,6 +22,8 @@ function loadPendingReservations(scope, api) {
 		scope.pagesArray = new Array(scope.npages);
 		scope.pendingRetrieved = true;
 		scope.loading = false;
+		
+		toolbox.scrollTo('table2');
 	}, function(data) {
 		console.log('error', data, status);
 		scope.loading = false;
@@ -50,7 +52,7 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 										key : 'user',
 										sortable : true,
 										label : filter('i18n')(
-										'pending.table.user')
+												'pending.table.user')
 									},
 									{
 										key : 'experiment',
@@ -143,6 +145,8 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$window, $gloriaLocale, $filter) {
 
 	$scope.pendingReady = false;
+	
+	toolbox.scrollTo('header');
 
 	$gloriaLocale.loadResource('pending/lang', 'pending', function() {
 		$scope.pendingReady = true;
@@ -161,6 +165,12 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	$scope.cancelButton = {
 		style : {}
 	};
+	$scope.refreshButton = {
+		style : {}
+	};
+	$scope.errorButton = {
+		style : {}
+	};
 
 	$scope.$watch('pagesArray', function() {
 		if (!$scope.tableBuilt && $scope.pending.length > 0) {
@@ -175,7 +185,10 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 			$scope.reservationSelected = true;
 			$scope.goButton.show = false;
 			$scope.cancelButton.show = false;
+			$scope.refreshButton.show = false;
+			$scope.errorButton.show = false;
 
+			$timeout.cancel($scope.timer);
 			$scope.refreshInfo();
 
 			var top = ($scope.selected.height * $scope.selected.index) + 3;
@@ -187,6 +200,9 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 
 			$scope.cancelButton.style.top = top + 'px';
 			$scope.cancelButton.style.left = cancelLeft + 'px';
+			
+			$scope.errorButton.style = $scope.cancelButton.style;
+			$scope.refreshButton.style = $scope.goButton.style;
 		}
 	});
 
@@ -196,21 +212,31 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 					if (info.status == 'READY') {
 						$scope.goButton.show = true;
 						$scope.cancelButton.show = false;
+						$scope.refreshButton.show = false;
+						$scope.errorButton.show = false;
 					} else if (info.status == 'SCHEDULED') {
 						var beginDate = new Date($scope.selected.begin);
 
 						if (beginDate < new Date()) {
 							$scope.timer = $timeout($scope.refreshInfo, 1000);
+							$scope.refreshButton.show = true;
+						} else {
+							$scope.cancelButton.show = true;
 						}
 						$scope.goButton.show = false;
-						$scope.cancelButton.show = true;
+						$scope.errorButton.show = false;
 					} else {
+						$scope.timer = $timeout($scope.refreshInfo, 1000);
 						$scope.goButton.show = false;
 						$scope.cancelButton.show = false;
+						$scope.refreshButton.show = false;
+						$scope.errorButton.show = true;
 					}
 				}, function(error) {
 					$scope.goButton.show = false;
 					$scope.cancelButton.show = true;
+					$scope.refreshButton.show = false;
+					$scope.errorButton.show = false;
 				});
 	};
 
@@ -239,6 +265,8 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$scope.pagination.set('total', $scope.npages);
 		$scope.goButton.show = false;
 		$scope.cancelButton.show = false;
+		$scope.refreshButton.show = false;
+		$scope.errorButton.show = false;
 	};
 
 	$scope.cancel = function() {

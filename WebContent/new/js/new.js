@@ -181,7 +181,7 @@ function buildUIAvTable(scope, elementName, paginationName, filter) {
 					});
 }
 
-function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
+function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location, $anchorScroll,
 		$gloriaLocale, $filter) {
 
 	$scope.ready = false;
@@ -191,9 +191,6 @@ function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	});
 	
 	$scope.summaryStyle = {};
-
-	// $('#select-exp').tooltip('show');
-
 	$scope.available = [];
 	$scope.slotsPerPage = 10;
 	$scope.slotSelected = false;
@@ -208,10 +205,11 @@ function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	$scope.$watch('date', function() {
 		if ($scope.date != null && $scope.telescopeSelected) {
 			$scope.slotSelected = false;
-			$scope.dateSelected = true;
+			$scope.dateSelected = true;			
 			$scope.reservationDone = false;
 			$scope.reservationError = false;
 			loadAvailableReservations($scope, $gloriaAPI);
+			toolbox.scrollTo('slots');
 		}
 	});
 
@@ -234,6 +232,7 @@ function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	$scope.back = function() {
 		$scope.dateSelected = false;
 		$scope.slotSelected = false;
+		toolbox.scrollTo('telescope');
 	};
 
 	$scope.onTimeout = function() {
@@ -253,6 +252,8 @@ function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		} else {
 			$scope.summaryStyle.backgroundImage = 'url(new/img/night-summary.jpg)';
 		}
+		
+		toolbox.scrollTo('telescope');
 	};
 
 	$scope.telescopeClicked = function(rt) {
@@ -261,6 +262,7 @@ function AvailableReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$scope.dateSelected = false;
 		$scope.reservationDone = false;
 		$scope.reservationError = false;
+		toolbox.scrollTo('date');
 	};
 
 	$scope.$on('$destroy', function() {

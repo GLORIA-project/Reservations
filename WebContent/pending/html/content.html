@@ -1,6 +1,6 @@
 <link href="pending/css/styles.css" rel="stylesheet"></link>
 <div ng-show="pendingReady" ng-controller="PendingReservationsListCtrl">
-	<div class="page-header" style="border: none; margin-bottom: 10px">
+	<div id="header" class="page-header" style="border: none; margin-bottom: 10px">
 		<div class="row" style="margin-bottom: 0px">
 			<h2 style="margin-left: 18px">{{'pending.header'|i18n}}</h2>
 		</div>
@@ -16,6 +16,18 @@
 			tooltip-placement="top" class="btn btn-info"
 			style="position: absolute" ng-style="goButton.style">
 			<i class="icon-play"></i>
+		</button>
+		<button ng-show="refreshButton.show" tooltip-popup-delay="500"
+			tooltip="{{'pending.refresh' |i18n}}" tooltip-placement="top"
+			class="btn btn-info" style="position: absolute"
+			ng-style="refreshButton.style">
+			<i class="icon-refresh"></i>
+		</button>
+		<button ng-show="errorButton.show" tooltip-popup-delay="500"
+			tooltip="{{'pending.error' |i18n}}" tooltip-placement="top"
+			class="btn btn-danger" style="position: absolute"
+			ng-style="errorButton.style">
+			<i class="icon-wrench"></i>
 		</button>
 		<button ng-show="cancelButton.show" ng-click="cancel()"
 			tooltip-popup-delay="500" tooltip="{{'pending.cancel' |i18n}}"
@@ -34,7 +46,8 @@
 	<div ng-show="pendingRetrieved && pending.length == 0">
 		<div class="alert alert-g animate-show"
 			style="width: 40%; margin-left: 30%">
-			{{'pending.nores' |i18n}}<a style="color: black" href="#/new"> {{'pending.here' |i18n}}</a>.
+			{{'pending.nores' |i18n}}<a style="color: black" href="#/new">
+				{{'pending.here' |i18n}}</a>.
 		</div>
 	</div>
 	<div ng-show="pending.length > 0 && !loading" id="pagination2"

@@ -9,6 +9,8 @@
 	"here": "aquí",
 	"go": "Ir",
 	"cancel": "Cancelar",
+    "refresh": "Cargando",
+    "error": "Problema en telescopio",
 	"table": {
 		"experiment": "Experimento",
 		"begin": "Comienzo",
