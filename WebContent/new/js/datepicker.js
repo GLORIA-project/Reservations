@@ -16,6 +16,10 @@ function datepickerBase(scope, timeout) {
 	};
 
 	scope.current = new Date();
+
+	scope.current = new Date(Date.UTC(scope.current.getUTCFullYear(), scope.current
+			.getUTCMonth(), scope.current.getUTCDate()));
+
 	scope.week = new Date(scope.current.getTime() + 518400000);
 
 	// Disable weekend selection
@@ -26,7 +30,6 @@ function datepickerBase(scope, timeout) {
 	scope.toggleMin = function() {
 		scope.minDate = (scope.minDate) ? null : new Date();
 	};
-
 
 	scope.toggleMin();
 
