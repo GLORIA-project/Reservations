@@ -15,11 +15,12 @@ function datepickerBase(scope, timeout) {
 		scope.dt = null;
 	};
 
-	scope.current = new Date();
+	var now = new Date();
 
-	scope.current = new Date(Date.UTC(scope.current.getUTCFullYear(), scope.current
-			.getUTCMonth(), scope.current.getUTCDate()));
-
+	scope.current = new Date(now.getUTCFullYear(), now
+			.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
+	
+	console.log(scope.current);
 	scope.week = new Date(scope.current.getTime() + 518400000);
 
 	// Disable weekend selection
@@ -28,7 +29,7 @@ function datepickerBase(scope, timeout) {
 	};
 
 	scope.toggleMin = function() {
-		scope.minDate = (scope.minDate) ? null : new Date();
+		scope.minDate = (scope.minDate) ? null : scope.current;
 	};
 
 	scope.toggleMin();
@@ -48,7 +49,7 @@ function datepickerBase(scope, timeout) {
 function DatepickerCtrl($scope, $timeout) {
 	datepickerBase($scope, $timeout);
 
-	$scope.current = new Date();
+	//$scope.current = new Date();
 
 	$scope.$watch('dt', function() {
 		if ($scope.dt != undefined && $scope.dt != null) {
