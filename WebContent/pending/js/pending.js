@@ -22,7 +22,7 @@ function loadPendingReservations(scope, api) {
 		scope.pagesArray = new Array(scope.npages);
 		scope.pendingRetrieved = true;
 		scope.loading = false;
-		
+
 		toolbox.scrollTo('table2');
 	}, function(data) {
 		console.log('error', data, status);
@@ -32,6 +32,15 @@ function loadPendingReservations(scope, api) {
 	}, function() {
 		scope.$emit('unauthorized');
 	});
+}
+
+function formatDateRow(d, filter) {
+	var date = new Date(d.value);
+	var dateStr = filter('date')(date, 'yyyy-MM-dd HH:mm');
+	date = filter('utc')(date);
+	dateStr += ' (' + filter('date')(date, 'HH:mm') + ' UT)';
+
+	d.value = dateStr;
 }
 
 function buildUIPendingTable(scope, elementName, paginationName, filter) {
@@ -65,8 +74,14 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 												'pending.table.begin'),
 										sortable : 'true',
 										formatter : function(o) {
-											return new Date(o.value)
-													.toUTCString();
+											var now = new Date();
+											var date = new Date(o.value);
+											if (now >= date) {
+												o.rowClass = 'rowBackBold';
+											} else {
+												o.rowClass = 'rowBack';
+											}
+											formatDateRow(o, filter);
 										}
 
 									},
@@ -76,11 +91,8 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 												'pending.table.end'),
 										sortable : 'true',
 										formatter : function(o) {
-											o.rowClass = 'rowBack';
-											o.value = new Date(o.value)
-													.toUTCString();
+											formatDateRow(o, filter);
 										}
-
 									},
 									{
 										key : 'telescopes',
@@ -107,6 +119,13 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 														scope.pending.slice(
 																fromIndex,
 																toIndex));
+												
+												scope.showTelescope = false;
+												scope.goButton.show = false;
+												scope.cancelButton.show = false;
+												scope.refreshButton.show = false;
+												scope.errorButton.show = false;
+												scope.$apply();
 											}
 										}
 									}
@@ -145,7 +164,7 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$window, $gloriaLocale, $filter) {
 
 	$scope.pendingReady = false;
-	
+
 	toolbox.scrollTo('header');
 
 	$gloriaLocale.loadResource('pending/lang', 'pending', function() {
@@ -158,6 +177,14 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	$scope.tableInit = false;
 	$scope.selected = null;
 	$scope.tableStyle = {};
+	$scope.telescopeStyle = {
+		border : '1px solid rgba(192, 192, 192, 0.13)',
+		borderRadius : '2px'
+	};
+	$scope.mountStyle = {};
+	$scope.weatherStyle = {};
+	$scope.domeStyle = {};
+	$scope.showTelescope = false;
 	$scope.tableBuilt = false;
 	$scope.goButton = {
 		style : {}
@@ -181,7 +208,6 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 
 	$scope.$watch('selected', function() {
 		if ($scope.selected != null) {
-
 			$scope.reservationSelected = true;
 			$scope.goButton.show = false;
 			$scope.cancelButton.show = false;
@@ -189,8 +215,6 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 			$scope.errorButton.show = false;
 
 			$timeout.cancel($scope.timer);
-			$scope.refreshInfo();
-
 			var top = ($scope.selected.height * $scope.selected.index) + 3;
 			var cancelLeft = $scope.selected.left - 48;
 			var goLeft = cancelLeft + $scope.selected.width + 56;
@@ -200,11 +224,79 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 
 			$scope.cancelButton.style.top = top + 'px';
 			$scope.cancelButton.style.left = cancelLeft + 'px';
-			
+
 			$scope.errorButton.style = $scope.cancelButton.style;
 			$scope.refreshButton.style = $scope.goButton.style;
+
+			$scope.refreshInfo();
+			$scope.loadTelescopeState();
 		}
 	});
+
+	$scope.showRTStatus = function(left) {
+		$scope.telescopeStyle.top = $scope.cancelButton.style.top;
+		if (left) {
+			var left = $scope.selected.left - 205;
+			$scope.telescopeStyle.left = left + 'px';
+		} else {
+			var left = $scope.selected.left + $scope.selected.width + 56;
+			$scope.telescopeStyle.left = left + 'px';
+		}
+		$scope.showTelescope = true;
+	};
+
+	$scope.initTelescopeState = function() {
+		$scope.rtStatus = {
+			mount : {},
+			dome : {},
+			weather : {}
+		};
+	};
+
+	$scope.loadTelescopeState = function() {
+		$scope.initTelescopeState();
+
+		$gloriaAPI.getWeatherState($scope.selected.telescopes, function(data) {
+			var alarm = false;
+			if (data.wind != undefined) {
+				alarm = alarm || data.wind.alarm;
+			}
+			if (data.rh != undefined) {
+				alarm = alarm || data.rh.alarm;
+			}
+
+			if (alarm) {
+				$scope.weatherStyle.color = 'rgb(218, 79, 73)';
+				$scope.rtStatus.weather.state = 'ALARM';
+			} else {
+				$scope.weatherStyle.color = 'silver';
+				$scope.rtStatus.weather.state = 'CLEAR';
+			}
+		}, function(error) {
+			$scope.rtStatus.weather.state = 'ERROR';
+			$scope.weatherStyle.color = 'rgb(218, 79, 73)';
+		});
+
+		$gloriaAPI.getDomeState($scope.selected.telescopes, function(data) {
+			$scope.rtStatus.dome = data;
+			if (data.state === 'UNDEFINED') {
+				$scope.domeStyle.color = 'rgb(218, 79, 73)';
+			} else {
+				$scope.domeStyle.color = 'silver';
+			}
+		}, function(error) {
+			$scope.domeStyle.color = 'rgb(218, 79, 73)';
+			$scope.rtStatus.dome.state = 'ERROR';
+		});
+
+		$gloriaAPI.getMountState($scope.selected.telescopes, function(data) {
+			$scope.mountStyle.color = 'silver';
+			$scope.rtStatus.mount = data;
+		}, function(error) {
+			$scope.mountStyle.color = 'rgb(218, 79, 73)';
+			$scope.rtStatus.mount.state = 'ERROR';
+		});
+	};
 
 	$scope.refreshInfo = function() {
 		$gloriaAPI.getReservationInformation($scope.selected.reservationId,
@@ -214,29 +306,34 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 						$scope.cancelButton.show = false;
 						$scope.refreshButton.show = false;
 						$scope.errorButton.show = false;
+						$scope.showRTStatus(false);
 					} else if (info.status == 'SCHEDULED') {
 						var beginDate = new Date($scope.selected.begin);
 
 						if (beginDate < new Date()) {
 							$scope.timer = $timeout($scope.refreshInfo, 1000);
 							$scope.refreshButton.show = true;
+							$scope.showRTStatus(false);
 						} else {
 							$scope.cancelButton.show = true;
+							$scope.showRTStatus(true);
 						}
 						$scope.goButton.show = false;
 						$scope.errorButton.show = false;
 					} else {
-						$scope.timer = $timeout($scope.refreshInfo, 1000);
+						$scope.timer = $timeout($scope.refreshInfo, 5000);
 						$scope.goButton.show = false;
 						$scope.cancelButton.show = false;
 						$scope.refreshButton.show = false;
 						$scope.errorButton.show = true;
+						$scope.showRTStatus(true);
 					}
+
 				}, function(error) {
 					$scope.goButton.show = false;
-					$scope.cancelButton.show = true;
+					$scope.cancelButton.show = false;
 					$scope.refreshButton.show = false;
-					$scope.errorButton.show = false;
+					$scope.errorButton.show = true;
 				});
 	};
 
@@ -253,10 +350,9 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	});
 
 	$scope.go = function() {
-
-		var url = $window.location.origin + '/'
-				+ $scope.selected.experiment.toLowerCase() + '/#/view?rid='
-				+ $scope.selected.reservationId;
+		var url = $window.location.protocol + '//' + $window.location.host
+				+ '/' + $scope.selected.experiment.toLowerCase()
+				+ '/#/view?rid=' + $scope.selected.reservationId;
 		$window.location.href = url;
 	};
 
@@ -270,6 +366,8 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 	};
 
 	$scope.cancel = function() {
+		$scope.showTelescope = false;
+
 		$gloriaAPI.cancelReservation($scope.selected.reservationId, function() {
 
 			loadPendingReservations($scope, $gloriaAPI).then(function() {
@@ -293,4 +391,5 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$timeout.cancel($scope.timer);
 	});
 
+	$scope.initTelescopeState();
 }

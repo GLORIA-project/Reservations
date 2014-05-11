@@ -17,5 +17,9 @@
 		"end": "Fin",
 		"telescopes": "Telescopios",
 		"user": "Usuario"
-	}
+	},
+    "status": "Estado actual",
+    "mount": "Montura",
+    "dome": "Cúpula",
+    "weather": "Tiempo"
 }

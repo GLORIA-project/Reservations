@@ -1,62 +1,24 @@
 'use strict';
 
-function pad(n) {
-	return (n < 10) ? ("0" + n) : n;
+function formatDateRow(d, filter) {
+	d.rowClass = 'rowBack';
+	var date = new Date(d.value);
+	var dateStr = filter('date')(date, 'HH:mm');
+	date = filter('utc')(date);
+	dateStr += ' (' + filter('date')(date, 'HH:mm') + ' UT)';
+	
+	d.value = dateStr;
 }
-
-toolbox.lazy.filter('UTCFullFilter', function() {
-	return function(input) {
-		return new Date(input).toUTCString();
-	};
-});
-
-toolbox.lazy.filter('UTCTimeFilter', function() {
-	return function(input) {
-		var date = new Date(input);
-		var dateStr = '' + pad(date.getUTCHours());
-		dateStr += ':' + pad(date.getUTCMinutes());
-		dateStr += ' UT';
-		return dateStr;
-	};
-});
-
-toolbox.lazy.filter('TimeFilter', function() {
-	return function(input) {
-		var date = new Date(input);
-		var dateStr = '' + pad(date.getHours());
-		dateStr += ':' + pad(date.getMinutes());
-		return dateStr;
-	};
-});
-
-toolbox.lazy.filter('DateFilter', function() {
-	return function(input) {
-		var date = new Date(input);
-		var dateStr = '' + pad(date.getMonth() + 1);
-		dateStr += '/' + pad(date.getDate());
-		dateStr += '/' + pad(date.getFullYear());
-		return dateStr;
-	};
-});
-
-toolbox.lazy.filter('UTCDateFilter', function() {
-	return function(input) {
-		var date = new Date(input);
-		var dateStr = '' + pad(date.getUTCMonth() + 1);
-		dateStr += '/' + pad(date.getUTCDate());
-		dateStr += '/' + pad(date.getUTCFullYear());
-		dateStr += ' UT';
-		return dateStr;
-	};
-});
 
 function loadAvailableReservations(scope, api) {
 
 	scope.available = [];
 	scope.loading = true;
+	
+	var dh = scope.date.getTimezoneOffset() / 60;
 
-	api.getAvailableReservations(scope.experimentSelected,
-			[ scope.telescopeSelected ], scope.date, function(data) {
+	api.getAvailableReservationsDh(scope.experimentSelected,
+			[ scope.telescopeSelected ], scope.date, dh, function(data) {
 				var slots = [];
 				data.forEach(function(element) {
 					slots.push({
@@ -98,18 +60,7 @@ function buildUIAvTable(scope, elementName, paginationName, filter) {
 								label : filter('i18n')('new.phases.four.table.begin'),
 								sortable : 'true',
 								formatter : function(o) {
-									o.rowClass = 'rowBack';
-
-									var date = new Date(o.value);
-
-									var dateStr = '' + pad(date.getHours());
-									dateStr += ':' + pad(date.getMinutes());
-
-									dateStr += ' (' + pad(date.getUTCHours());
-									dateStr += ':' + pad(date.getUTCMinutes());
-									dateStr += ' UT)';
-
-									o.value = dateStr;
+									formatDateRow(o, filter);
 								}
 
 							}, {
@@ -117,17 +68,7 @@ function buildUIAvTable(scope, elementName, paginationName, filter) {
 								label : filter('i18n')('new.phases.four.table.end'),
 								sortable : 'true',
 								formatter : function(o) {
-									o.rowClass = 'rowBack';
-									var date = new Date(o.value);
-
-									var dateStr = '' + pad(date.getHours());
-									dateStr += ':' + pad(date.getMinutes());
-
-									dateStr += ' (' + pad(date.getUTCHours());
-									dateStr += ':' + pad(date.getUTCMinutes());
-									dateStr += ' UT)';
-
-									o.value = dateStr;
+									formatDateRow(o, filter);
 								}
 
 							} ],

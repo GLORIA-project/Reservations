@@ -15,12 +15,7 @@ function datepickerBase(scope, timeout) {
 		scope.dt = null;
 	};
 
-	var now = new Date();
-
-	scope.current = new Date(now.getUTCFullYear(), now
-			.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
-	
-	console.log(scope.current);
+	scope.current = new Date();
 	scope.week = new Date(scope.current.getTime() + 518400000);
 
 	// Disable weekend selection
@@ -49,11 +44,8 @@ function datepickerBase(scope, timeout) {
 function DatepickerCtrl($scope, $timeout) {
 	datepickerBase($scope, $timeout);
 
-	//$scope.current = new Date();
-
 	$scope.$watch('dt', function() {
 		if ($scope.dt != undefined && $scope.dt != null) {
-			// $scope.$emit('dateSelected', $scope.dt);
 			$scope.$parent.date = $scope.dt;
 		}
 	});

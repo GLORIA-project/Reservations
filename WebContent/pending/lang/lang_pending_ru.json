@@ -17,5 +17,9 @@
         "end": "Окончание",
         "telescopes": "Телескопы",
         "user": "User"
-    }
+    },
+    "status": "Current status",
+    "mount": "Mount",
+    "dome": "Dome",
+    "weather": "Weather"
 }

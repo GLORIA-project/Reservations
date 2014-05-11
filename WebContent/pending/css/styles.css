@@ -18,8 +18,30 @@
 	border-top: 1px solid rgba(221, 221, 221, 0.19);
 }
 
-.table-hover tbody tr:hover > td,
-.table-hover tbody tr:hover > th {
-  color: #D3AF7B;
-  background-color: rgba(20, 20, 20, 0.55);
+.table-hover tbody tr:hover>td,.table-hover tbody tr:hover>th {
+	color: #D3AF7B;
+	background-color: rgba(20, 20, 20, 0.55);
+}
+
+.rowBackBold {
+	font-weight: bold;
+	color: silver;
+}
+
+.rowBack {
+	opacity: 0.7;
+}
+
+.popover.right .arrow:after {
+	border-right-color: silver;
+}
+
+.popover {
+	border-radius: 2px;
+}
+
+.popover-title {
+	border-radius: 2px;
+	background-color: transparent;
+	line-height: 15px;
 }
