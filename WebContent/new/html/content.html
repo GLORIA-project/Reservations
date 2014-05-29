@@ -62,7 +62,7 @@
 							{{'new.phases.two.telescopes.b1a.desc'|i18n}}
 						</div>
 					</li>
-					<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<!-- <li ng-show="experimentSelected == 'NIGHT'" class="span6">
 						<div class="experiment-banner pcard"
 							style="background-image: url(new/img/b1-alpha.png);"
 							ng-click="telescopeClicked('BOOTES-1B')"
@@ -70,7 +70,7 @@
 							<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.b1b.name'|i18n}}</h4>
 							{{'new.phases.two.telescopes.b1b.desc'|i18n}}
 						</div>
-					</li>
+					</li>-->
 					<li ng-show="experimentSelected == 'NIGHT'" class="span6">
 						<div class="experiment-banner pcard"
 							style="background-image: url(new/img/b2-alpha.png);"
@@ -80,7 +80,7 @@
 							{{'new.phases.two.telescopes.b2.desc'|i18n}}
 						</div>
 					</li>
-					<li ng-show="experimentSelected == 'NIGHT'" class="span6">
+					<!-- <li ng-show="experimentSelected == 'NIGHT'" class="span6">
 						<div class="experiment-banner pcard"
 							style="background-image: url(new/img/b3-alpha.png);"
 							ng-click="telescopeClicked('BOOTES-3')"
@@ -88,7 +88,7 @@
 							<h4 style="margin-top: 0px">{{'new.phases.two.telescopes.b3.name'|i18n}}</h4>
 							{{'new.phases.two.telescopes.b3.desc'|i18n}}
 						</div>
-					</li>
+					</li>-->
 					<li ng-show="experimentSelected == 'NIGHT'" class="span6">
 						<div class="experiment-banner pcard"
 							style="background-image: url(new/img/tadn-alpha.png);"
@@ -172,7 +172,7 @@
 								<p style="font-size: 0.85em; line-height: 15px">{{'new.phases.four.summary.what.text'|i18n:telescopeSelected:
 									experimentSelected}}</p>
 								<h5 style="color: #FF9900; margin-bottom: 5px">{{'new.phases.four.summary.when.title'|i18n}}</h5>
-								<p style="font-size: 0.85em; line-height: 15px">
+								<p ng-if="slot.begin != undefined && slot.end != undefined" style="font-size: 0.85em; line-height: 15px">
 									{{'new.phases.four.summary.when.text'|i18n:(slot.begin | utc |
 									date:'completeDate'):(slot.end | utc | date:'completeDate')}}</p>
 								<div ng-show="!reservationDone && !reservationError"

@@ -34,13 +34,15 @@ function loadPendingReservations(scope, api) {
 	});
 }
 
-function formatDateRow(d, filter) {
+function formatPendingDateRow(d, filter) {
 	var date = new Date(d.value);
-	var dateStr = filter('date')(date, 'yyyy-MM-dd HH:mm');
-	date = filter('utc')(date);
-	dateStr += ' (' + filter('date')(date, 'HH:mm') + ' UT)';
+	if (date !== undefined) {
+		var dateStr = filter('date')(date, 'yyyy-MM-dd HH:mm');
+		date = filter('utc')(date);
+		dateStr += ' (' + filter('date')(date, 'HH:mm') + ' UT)';
 
-	d.value = dateStr;
+		d.value = dateStr;
+	}
 }
 
 function buildUIPendingTable(scope, elementName, paginationName, filter) {
@@ -50,57 +52,64 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 					'aui-pagination',
 					function(Y) {
 
-						scope.table = new Y.DataTable({
-							columns : [
-									{
-										key : 'reservationId',
-										sortable : true,
-										label : '#'
-									},
-									{
-										key : 'user',
-										sortable : true,
-										label : filter('i18n')(
-												'pending.table.user')
-									},
-									{
-										key : 'experiment',
-										label : filter('i18n')(
-												'pending.table.experiment')
-									},
-									{
-										key : 'begin',
-										label : filter('i18n')(
-												'pending.table.begin'),
-										sortable : 'true',
-										formatter : function(o) {
-											var now = new Date();
-											var date = new Date(o.value);
-											if (now >= date) {
-												o.rowClass = 'rowBackBold';
-											} else {
-												o.rowClass = 'rowBack';
-											}
-											formatDateRow(o, filter);
-										}
+						scope.table = new Y.DataTable(
+								{
+									columns : [
+											{
+												key : 'reservationId',
+												sortable : true,
+												label : '#'
+											},
+											{
+												key : 'user',
+												sortable : true,
+												label : filter('i18n')(
+														'pending.table.user')
+											},
+											{
+												key : 'experiment',
+												label : filter('i18n')
+														(
+																'pending.table.experiment')
+											},
+											{
+												key : 'begin',
+												label : filter('i18n')(
+														'pending.table.begin'),
+												sortable : 'true',
+												formatter : function(o) {
+													var now = new Date();
+													var date = new Date(o.value);
+													if (date != undefined) {
+														if (now >= date) {
+															o.rowClass = 'rowBackBold';
+														} else {
+															o.rowClass = 'rowBack';
+														}
+														formatPendingDateRow(o,
+																filter);
+													}
+												}
 
-									},
-									{
-										key : 'end',
-										label : filter('i18n')(
-												'pending.table.end'),
-										sortable : 'true',
-										formatter : function(o) {
-											formatDateRow(o, filter);
-										}
-									},
-									{
-										key : 'telescopes',
-										label : filter('i18n')(
-												'pending.table.telescopes')
-									} ],
-							recordset : scope.pending.slice(0, 10)
-						});
+											},
+											{
+												key : 'end',
+												label : filter('i18n')(
+														'pending.table.end'),
+												sortable : 'true',
+												formatter : function(o) {
+													formatPendingDateRow(o,
+															filter);
+												}
+											},
+											{
+												key : 'telescopes',
+												label : filter('i18n')
+														(
+																'pending.table.telescopes')
+											} ],
+									recordset : scope.pending.slice(0, 10)
+								});
 
 						scope.pagination = new Y.Pagination(
 								{
@@ -119,13 +128,16 @@ function buildUIPendingTable(scope, elementName, paginationName, filter) {
 														scope.pending.slice(
 																fromIndex,
 																toIndex));
-												
+
 												scope.showTelescope = false;
 												scope.goButton.show = false;
 												scope.cancelButton.show = false;
 												scope.refreshButton.show = false;
 												scope.errorButton.show = false;
-												scope.$apply();
+												try {
+													scope.$apply();
+												} catch (e) {
+												}
 											}
 										}
 									}
@@ -257,13 +269,7 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		$scope.initTelescopeState();
 
 		$gloriaAPI.getWeatherState($scope.selected.telescopes, function(data) {
-			var alarm = false;
-			if (data.wind != undefined) {
-				alarm = alarm || data.wind.alarm;
-			}
-			if (data.rh != undefined) {
-				alarm = alarm || data.rh.alarm;
-			}
+			var alarm = data.alarm;
 
 			if (alarm) {
 				$scope.weatherStyle.color = 'rgb(218, 79, 73)';
@@ -290,6 +296,9 @@ function PendingReservationsListCtrl($gloriaAPI, $scope, $timeout, $location,
 		});
 
 		$gloriaAPI.getMountState($scope.selected.telescopes, function(data) {
+			if (data.state === 'UNDEFINED') {
+				data.state = 'UNKNOWN';
+			}
 			$scope.mountStyle.color = 'silver';
 			$scope.rtStatus.mount = data;
 		}, function(error) {

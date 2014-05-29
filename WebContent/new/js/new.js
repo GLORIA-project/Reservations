@@ -1,13 +1,15 @@
 'use strict';
 
-function formatDateRow(d, filter) {
+function formatNewDateRow(d, filter) {
 	d.rowClass = 'rowBack';
 	var date = new Date(d.value);
-	var dateStr = filter('date')(date, 'HH:mm');
-	date = filter('utc')(date);
-	dateStr += ' (' + filter('date')(date, 'HH:mm') + ' UT)';
-	
-	d.value = dateStr;
+	if (date !== undefined) {
+		var dateStr = filter('date')(date, 'HH:mm');
+		date = filter('utc')(date);
+		dateStr += ' (' + filter('date')(date, 'HH:mm') + ' UT)';
+		
+		d.value = dateStr;
+	}
 }
 
 function loadAvailableReservations(scope, api) {
@@ -60,7 +62,7 @@ function buildUIAvTable(scope, elementName, paginationName, filter) {
 								label : filter('i18n')('new.phases.four.table.begin'),
 								sortable : 'true',
 								formatter : function(o) {
-									formatDateRow(o, filter);
+									formatNewDateRow(o, filter);
 								}
 
 							}, {
@@ -68,7 +70,7 @@ function buildUIAvTable(scope, elementName, paginationName, filter) {
 								label : filter('i18n')('new.phases.four.table.end'),
 								sortable : 'true',
 								formatter : function(o) {
-									formatDateRow(o, filter);
+									formatNewDateRow(o, filter);
 								}
 
 							} ],
